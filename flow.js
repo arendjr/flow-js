@@ -3,7 +3,7 @@
 // Copyright (c) 2010 William R. Conant, WillConant.com
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 
-(function(){
+define(function() {
 	// converts native arguments object to an array and applies function
 	function applyArgs(func, thisObj, args) {
 		return func.apply(thisObj, Array.prototype.slice.call(args));
@@ -99,8 +99,7 @@
 	
 	// defines a flow and evaluates it immediately. The first flow function won't receive any arguments.
 	function exec() {
-		var flow = typeof exports != 'undefined' ? exports : window.flow;
-		applyArgs(flow.define, flow, arguments)();
+		applyArgs(define, this, arguments)();
 	}
 	
 	// a very useful flow for serial execution of asynchronous functions over a list of values
@@ -132,18 +131,10 @@
 			if (this.finish) this.finish();
 		}
 	);
-	
-	// export our functions
-	if (typeof exports !== "undefined") {
-		exports.define = define;
-		exports.exec = exec;
-		exports.serialForEach = serialForEach;
-	}
-	else if (typeof window !== "undefined") {
-		window.flow = {
-			define: define,
-			exec: exec,
-			serialForEach: serialForEach
-		};
-	}
-})();
+
+	return {
+        "define": define,
+	    "exec": exec,
+	    "serialForEach": serialForEach
+	};
+});
